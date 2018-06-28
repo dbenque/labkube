@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: labkube
+  name: labkube
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      run: labkube
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: labkube
+    spec:
+      containers:
+      - image: dbenque/labkube:v1
+        env:
+        - name: MY_LABKUBE_VAR
+          value: "Hello from the environment with readyness"
+        name: labkube
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 3

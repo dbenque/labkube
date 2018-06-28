@@ -11,7 +11,10 @@ import (
 
 func main() {
 	r := mux.NewRouter()
-
+	r.HandleFunc("/ready", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("request on URI /ready")
+		w.WriteHeader(200)
+	})
 	r.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("request on URI /hello")
 		fmt.Fprintf(w, "Hello I am pod %s\nWelcome to kubernetes lab.\n", os.Getenv("HOSTNAME"))

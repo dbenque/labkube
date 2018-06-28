@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: labkube
+  name: labkube
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      run: labkube
+  template:
+    metadata:
+      labels:
+        run: labkube
+    spec:
+      containers:
+      - image: dbenque/labkube:v1
+        name: labkube
+        ports:
+        - containerPort: 8080      

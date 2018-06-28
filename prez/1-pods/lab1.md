@@ -244,3 +244,9 @@ KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
 KUBERNETES_PORT_443_TCP_PROTO=tcp
 HOME=/root
 ```
+
+You can directly edit some sections of the resource. For exampe you can add an annotation. The following command will open the editor configured for your environment:
+
+``` shell
+> kubectl edit pod labkube
+```
