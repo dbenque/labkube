@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: labkube
+  name: labkube
+spec:
+  containers:
+  - image: dbenque/labkube:v1
+    name: labkube
+    ports:
+    - containerPort: 8080

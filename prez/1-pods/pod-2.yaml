@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: labkube
+  name: labkube-env
+spec:
+  containers:
+  - image: dbenque/labkube:v1
+    env:
+    - name: MY_LABKUBE_VAR
+      value: "Hello from the environment"
+    name: labkube
+    ports:
+    - containerPort: 8080

@@ -1,0 +1,4 @@
+package: github.com/dbenque/kubelab
+import:
+- package: github.com/gorilla/mux
+  version: ~1.6.2
