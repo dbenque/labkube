@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: labkubesvc
+  labels:
+    purpose: training
+spec:
+  selector:
+    run: labkube
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080

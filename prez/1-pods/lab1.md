@@ -245,6 +245,8 @@ KUBERNETES_PORT_443_TCP_PROTO=tcp
 HOME=/root
 ```
 
+Also something noticeable here: the HOSTNAME environment variable is set to the name of the pod.
+
 You can directly edit some sections of the resource. For exampe you can add an annotation. The following command will open the editor configured for your environment:
 
 ``` shell

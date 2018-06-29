@@ -1,6 +1,6 @@
 # Deployment
 
-Now that we know ```pods``` the following, we can ask the following questions:
+Now that we know ```pods```, we can ask the following questions:
 
 - What if the pod that I have launched die?
 - What if I want to run multiple instances of the same pod?
@@ -296,3 +296,44 @@ REVISION  CHANGE-CAUSE
 2         kubectl apply --record=true --filename=deployment-3.yaml
 3         kubectl apply --record=true --filename=deployment-4.yaml
 ```
+
+Another way of changing the number of replicas for a given deployment:
+
+```shell
+> kubectl scale --replicas=5 deployment/labkube
+deployment "labkube" scaled
+```
+
+Here we are a simple case with only one deployment and set of pods. If you start doing multiple deployments, how does kubernetes associates the pods with the deployment?
+
+You said `ownerRef` ? Well no, this is just for garbage collection purposes. In fact the association is done thanks to the `deployment.spec.selector` and the `pod.metadata.labels`. 
+
+If the `selector` match a subset of the pod `labels` then kuberntes considers that the deployment controls the pod. This means that a pod can be under the control of several deployments! Select your labels and selector carefully to avoid such situation that lead to undetermined behavior.
+
+# Exercice 1
+
+Using the image `docker/whalesay` ( https://hub.docker.com/r/docker/whalesay/ ) , produce a deployment that generates pods which logs would be something like that:
+
+```shell
+ ______________________ 
+< exo1-757d9b6645-4c652 >
+ ---------------------- 
+    \
+     \
+      \     
+                    ##        .            
+              ## ## ##       ==            
+           ## ## ## ##      ===            
+       /""""""""""""""""___/ ===        
+  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~   
+       \______ o          __/            
+        \    \        __/             
+          \____\______/   
+
+```
+
+where `exo1-757d9b6645-4c652` is the name of the pod producing that logs.
+
+# Exercice 2
+
+Check the status of the pods created during the Exercice 1. What can you do to avoid the "CrashLoopBackOff" state (if it is the case) ?
