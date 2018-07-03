@@ -80,7 +80,7 @@ Events:
 what logs?
 
 ``` shell
-kubectl logs kubelab
+kubectl logs labkube
 ```
 
 can we enter the container?
