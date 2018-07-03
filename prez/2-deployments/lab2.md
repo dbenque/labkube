@@ -11,7 +11,7 @@ The answer is ```deployment```
 First delete all the pods inside you namespace:
 
 ``` shell
-> kubectl delete pods $(kubectl get pods -ojsonpath={.items[*].metadata.name})
+> kubectl delete pods --all
 pod "labkube" deleted
 pod "labkube-env" deleted
 ```
