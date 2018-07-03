@@ -57,9 +57,7 @@ spec:
 
 Let's clean previous deployments and pods, and let's create new objects:
 ```shell
-> kubectl delete deployments $(kubectl get deployments -ojsonpath={.items[*].metadata.name})
-...
-> kubectl delete pods $(kubectl get pods -ojsonpath={.items[*].metadata.name})
+> kubectl delete deployments,pods --all
 ...
 
 > kubectl get pods
@@ -378,6 +376,8 @@ In case you have modified them during the lab, re-apply the definition of deploy
 Let's make some cleanup by deleting all pods. Kubernetes will recreate them with in initial status.
 
 ```shell
+> kubectl delete pods --all
+OR
 > kubectl delete pods $(kubectl get pods -ojsonpath={.items[*].metadata.name})
 ...
 ```
