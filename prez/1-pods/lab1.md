@@ -201,7 +201,7 @@ spec:
     - containerPort: 8080
 
 
-> kubectl create -f pod-1.yaml
+> kubectl create -f pod-2.yaml
 pod "labkube-env" created
 ```
 
