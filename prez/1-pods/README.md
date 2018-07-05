@@ -77,7 +77,7 @@ Events:
   Normal  Started                7m    kubelet, minikube  Started container
 ```
 
-what logs?
+what about logs?
 
 ``` shell
 kubectl logs labkube
@@ -158,7 +158,7 @@ pod "labkube" deleted
 ```
 
 Now let's play directly with pod object definition. Have a look at file pod-1.yaml.
-All the values that have disapeared compare to what we have seen with ```kubectl get pod labkube -oyaml``` are either the default values or status or runtime value.
+All the values that have disapeared compare to what we have seen with ```kubectl get pod labkube -oyaml``` are either the default values or status or runtime values.
 
 ``` shell
 > cat pod-1.yaml
@@ -193,9 +193,9 @@ metadata:
 spec:
   containers:
   - image: dbenque/labkube:v1
-    env:
-    - name: MY_LABKUBE_VAR
-      value: "Hello from the environment"
+    env:                                      # <-- Section for environment variable
+    - name: MY_LABKUBE_VAR                    #
+      value: "Hello from the environment"     #
     name: labkube
     ports:
     - containerPort: 8080
@@ -217,7 +217,7 @@ labkube-env   1/1       Running   0          39s
 Let's have a look at their environment
 
 ``` shell
-> kubectl exec labkube -- /bin/sh -c "cat /proc/1/environ | tr '\0' '\n'"
+> kubectl exec labkube -- env
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 HOSTNAME=labkube
 KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
@@ -230,7 +230,7 @@ KUBERNETES_PORT_443_TCP_PROTO=tcp
 KUBERNETES_PORT_443_TCP_PORT=443
 HOME=/root
 
-> kubectl exec labkube-env -- /bin/sh -c "cat /proc/1/environ | tr '\0' '\n'"
+> kubectl exec labkube-env -- env
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 HOSTNAME=labkube-env
 MY_LABKUBE_VAR=Hello from the environment
@@ -245,10 +245,22 @@ KUBERNETES_PORT_443_TCP_PROTO=tcp
 HOME=/root
 ```
 
-Also something noticeable here: the HOSTNAME environment variable is set to the name of the pod.
+Also something noticeable here: the `HOSTNAME` environment variable is set to the name of the pod.
 
 You can directly edit some sections of the resource. For exampe you can add an annotation. The following command will open the editor configured for your environment:
 
 ``` shell
 > kubectl edit pod labkube
 ```
+
+## Exercice 1
+
+Create a pod running an interactive shell based on "alpine" image.
+
+## Exercice 2
+
+Launch a pod that echo is name and exit.
+
+## Exercice 3
+
+Create a pod running labkube and `edit` its definition to modify/add [annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/) and [labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
