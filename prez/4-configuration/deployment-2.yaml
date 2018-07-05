@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: labkube-1
+  name: labkube-cmfile
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      run: labkube
+      instances: type-cmfile
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: labkube
+        instances: type-cmfile
+    spec:
+      containers:
+      - image: dbenque/labkube:v1
+        env:
+        - name: MY_DEPLOYMENT
+          value: "My deployment is labkube-cmfile"
+        name: labkube
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 30
+        volumeMounts:
+        - name: configmap-volume
+          mountPath: /etc/cm
+      volumes:
+        - name: configmap-volume
+          configMap:
+            name: myconfig

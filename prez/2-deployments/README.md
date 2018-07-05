@@ -2,9 +2,9 @@
 
 Now that we know ```pods```, we can ask the following questions:
 
-- What if the pod that I have launched die?
+- What if the pod that I have launched is deleted or crashes?
 - What if I want to run multiple instances of the same pod?
-- What if I want to rollout a new version of my pod ?
+- What if I want to rollout a new version of the image ?
 
 The answer is ```deployment```
 
@@ -23,10 +23,13 @@ Let's use again the command ```kubectl run``` but with a different ```restartPol
 deployment "labkube" created
 ```
 
-Note that this time a deployment was create, it is not a pod. Let's have a look to the definition of the object.
+Note that this time a deployment was created, it is not a pod. Let's have a look to the definition of the object.
 
 ``` shell
 > kubectl get deployment labkube -oyaml
+```
+
+```yaml
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -95,7 +98,9 @@ NAME                       READY     STATUS    RESTARTS   AGE
 labkube-76c7c9754d-nnjpm   1/1       Running   0          10m
 ```
 
-Let's have a look at the pod definition and lets focus on the field ```metadata.ownerReferences```
+We retrieve the name that we gave to the deployment "labkube" but also 2 sequences that look like identifiers...
+
+Let's have a look at the pod definition. Compared to previous lab on `pods` you should notice that a new section has appeared: ```metadata.ownerReferences```
 
 ``` shell
 > kubectl get pods -oyaml
@@ -111,12 +116,12 @@ items:
       run: labkube
     name: labkube-76c7c9754d-nnjpm
     namespace: default
-    ownerReferences:
-    - apiVersion: extensions/v1beta1
-      blockOwnerDeletion: true
-      controller: true
-      kind: ReplicaSet                              #Look on that line!
-      name: labkube-76c7c9754d
+    ownerReferences:                                # New section compare to previous lab !
+    - apiVersion: extensions/v1beta1                #
+      blockOwnerDeletion: true                      #
+      controller: true                              #
+      kind: ReplicaSet                              # Look on that line! What is that kind of object ?
+      name: labkube-76c7c9754d                      #
       uid: 483bd32b-7ab9-11e8-80ae-0800270f19f1
     resourceVersion: "6371"
     selfLink: /api/v1/namespaces/default/pods/labkube-76c7c9754d-nnjpm
@@ -126,7 +131,7 @@ items:
     ...
 ```
 
-So the parent of the ```pod``` is not the ```deployment```, it is a replicaSet. Let's have a look at that ```replicaSet``` object.
+So the parent of the `pod` is not the `deployment`, it is a `replicaSet`. Let's have a look at that `replicaSet` object.
 
 ``` shell
 > kubectl get replicaset
@@ -134,15 +139,15 @@ NAME                 DESIRED   CURRENT   READY     AGE
 labkube-76c7c9754d   1         1         1         17m
 ```
 
-If you open the yaml defintion of the replicaset you will notice that it is really close to the deployment. It contains the number of replicas and the pod definition.
+If you open the yaml definition of the replicaset you will notice that it is really close to the deployment. It contains the number of replicas and the pod definition.
 
-Purpose of the objects:
+Purpose of the objects by kind:
 
-- The Pod run the container(s)
-- The ReplicaSet object is going to be used by kubernetes to ensure that the relevant number of pods are running.
-- The Deployment help to transition from one replicaSet to another (check the spec.strategy section in the definition)
+- The `Pod` runs the container(s)
+- The `ReplicaSet` is going to be used by kubernetes to ensure that the relevant number of pods are running.
+- The `Deployment` helps to transition from one replicaSet to another (check the spec.strategy section in the definition)
 
-Depending on the modification that you do on the Deployment object the existing replicaSet will be modified or a new one will be create. If a new one is create then the deployment strategy is applied to transition from one definition to another.
+Depending on the modification that you do on the Deployment object the existing replicaSet will be modified or a new one will be create. If a new one is created then the deployment strategy is applied to transition from one definition to another.
 
 Let's delete the current deployment and create one with the resource definition in file ```deployment-1.yaml```
 
@@ -164,6 +169,7 @@ labkube-76c7c9754d-ks88c   1/1       Running   0          1m
 ```
 
 Open another new shell and run the following command to monitor what is happening at replicaSet level:
+
 ``` shell
 > kubectl get replicaset -w
 NAME                 DESIRED   CURRENT   READY     AGE
@@ -172,6 +178,7 @@ labkube-76c7c9754d   1         1         1         1m
 ```
 
 Now let's change the number of replica to 2, by applying a new definition:
+
 ```
 > kubectl apply --record -f deployment-2.yaml
 deployment "labkube" configured
@@ -310,9 +317,15 @@ You said `ownerRef` ? Well no, this is just for garbage collection purposes. In 
 
 If the `selector` match a subset of the pod `labels` then kuberntes considers that the deployment controls the pod. This means that a pod can be under the control of several deployments! Select your labels and selector carefully to avoid such situation that lead to undetermined behavior.
 
-# Exercice 1
+# Exercices
 
-Using the image `docker/whalesay` ( https://hub.docker.com/r/docker/whalesay/ ) , produce a deployment that generates pods which logs would be something like that:
+## Exercice 1
+
+Open the definition of a `replicaset` and check the ownerRef section.
+
+## Exercice 2
+
+Using the image `docker/whalesay` from [here](https://hub.docker.com/r/docker/whalesay/) , produce a deployment that generates pods which logs would be something like that:
 
 ```shell
  ______________________ 
@@ -334,6 +347,6 @@ Using the image `docker/whalesay` ( https://hub.docker.com/r/docker/whalesay/ ) 
 
 where `exo1-757d9b6645-4c652` is the name of the pod producing that logs.
 
-# Exercice 2
+## Exercice 3
 
 Check the status of the pods created during the Exercice 1. What can you do to avoid the "CrashLoopBackOff" state (if it is the case) ?

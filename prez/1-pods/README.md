@@ -101,6 +101,9 @@ let's have a look at the pod definition
 
 ``` shell
 > kubectl get pod -oyaml
+```
+
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -162,6 +165,9 @@ All the values that have disapeared compare to what we have seen with ```kubectl
 
 ``` shell
 > cat pod-1.yaml
+```
+
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
